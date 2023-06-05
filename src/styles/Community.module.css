@@ -22,7 +22,7 @@
 .newPost {
     width: 40%;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     padding-left: 3rem;
     position: fixed;
 }

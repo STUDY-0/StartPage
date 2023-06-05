@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from '../../public/logo.png';
-import styles from '../styles/Community.module.css';
+import styles from '../styles/community.module.css';
 import navStyles from '../styles/nav.module.css';
 import Image from 'next/image';
 
@@ -61,7 +61,7 @@ function Community() {
           </a>
           <ul className={navStyles['nav-list']}>
             <li className={navStyles.community}>
-              <a href="Community">Community</a>
+              <a href="community">Community</a>
             </li>
             <li className={navStyles.mypage}>
               <a href="mypage">My Page</a>

@@ -101,10 +101,10 @@ function App() {
           </a>
           <ul className={navStyles['nav-list']}>
             <li className={navStyles.community}>
-              <a href="Community">Community</a>
+              <a href="community">Community</a>
             </li>
             <li className={navStyles.mypage}>
-              <a href="MyPage">My Page</a>
+              <a href="mypage">My Page</a>
             </li>
           </ul>
         </div>
