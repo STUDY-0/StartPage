@@ -64,7 +64,7 @@ function Community() {
               <a href="Community">Community</a>
             </li>
             <li className={navStyles.mypage}>
-              <a href="MyPage">My Page</a>
+              <a href="mypage">My Page</a>
             </li>
           </ul>
         </div>
