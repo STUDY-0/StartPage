@@ -4,8 +4,8 @@ import logo from "../../public/images/logo.png";
 import styles from "../styles/community.module.css";
 import navStyles from "../styles/nav.module.css";
 import Image from "next/image";
-import firebase from "firebase/app";
-import db from "../net/db";
+import firebase from 'firebase';
+import { db } from "../net/db";
 import {
   getDocs,
   collection,
@@ -14,10 +14,10 @@ import {
   getFirestore,
   setDoc,
   serverTimestamp,
-} from "firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import io from "socket.io-client";
+} from "firebase/compat/firestore";
+import { doc, getDoc } from "firebase/compat/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/compat/auth";
+import { io } from "socket.io-client";
 
 const useOnClickOutside = (ref, handler) => {
   useEffect(() => {
@@ -28,10 +28,14 @@ const useOnClickOutside = (ref, handler) => {
       handler(event);
     };
 
-    document.addEventListener("mousedown", listener);
+    if (typeof window !== 'undefined') {
+      document.addEventListener("mousedown", listener);
+    }
 
     return () => {
-      document.removeEventListener("mousedown", listener);
+      if (typeof window !== 'undefined') {
+        document.removeEventListener("mousedown", listener);
+      }
     };
   }, [ref, handler]);
 };
@@ -46,7 +50,7 @@ function Community() {
   const [posts, setPosts] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
+  const [uid, setUID] = useState("");
   const [displayName, setDisplayName] = useState("");
 
   const router = useRouter();
@@ -60,9 +64,8 @@ function Community() {
         console.log("로그인 상태: 로그인됨" + user.uid);
 
         // 사용자 정보 가져오기
-        const { displayName, email } = user;
-        setNickname(displayName); // 사용자의 displayName을 nickname으로 설정
-        setEmail(email);
+        const { uid } = user;
+        setUID(uid);
 
         // 사용자 정보를 서버로 전송
         const pagePath = router.pathname;
@@ -78,8 +81,8 @@ function Community() {
 
   // 현재 접속한 이메일 출력
   useEffect(() => {
-    console.log("User uid in Community:", email);
-  }, [email]);
+    console.log("User uid in Community:", uid);
+  }, [uid]);
 
   // modal
   const openModal = () => {
@@ -146,6 +149,7 @@ function Community() {
       roomID,
       date: datestr, // 날짜 저장
       timestamp: today,
+      nickname: nickname,
     });
 
     setTitle("");
@@ -173,8 +177,6 @@ function Community() {
   let year = today.getFullYear(); // 년도
   let month = today.getMonth() + 1; // 월
   let date = today.getDate(); // 날짜
-
-  console.log(year + "/" + month + "/" + date);
 
   const datestr = year + "/" + month + "/" + date;
 
@@ -212,14 +214,14 @@ function Community() {
     return (
       <div className={styles.post} onClick={handlePostClick}>
         <h1 className={styles["post-title"]}>{post.title}</h1>
-        <p className={styles["post-writer"]}>{nickname}</p>
+        <p className={styles["post-writer"]}>{post.nickname}</p>
         <p className={styles["post-date"]}>{datestr}</p>
         <p className={styles["post-content"]}>{post.content}</p>
       </div>
     );
   };
 
-  // // 소켓 클라이언트 코드 시작점
+  // 소켓 클라이언트 코드 시작점
   useEffect(() => {
     const socket = io.connect("http://localhost:4000");
 
@@ -232,7 +234,7 @@ function Community() {
         // 사용자 정보 가져오기
         const { displayName, email, uid } = user;
         setDisplayName(displayName);
-        setEmail(uid);
+        setEmail(email);
 
         // 사용자 정보를 서버로 전송
         const pagePath = router.pathname;
@@ -252,7 +254,7 @@ function Community() {
       unsubscribe();
     };
   }, [router.pathname]);
-  // // 소켓 클라이언트 코드 끝
+  // 소켓 클라이언트 코드 끝
 
   return (
     <div className={styles.App}>
@@ -320,14 +322,12 @@ function Community() {
                 </p>
               )}
               {missingFieldsError && (
-                <p className={styles.errorMessage}>* 모든 칸을 입력해주세요.</p>
+                <p className={styles.errorMessage}>* 필수 항목을 입력하세요.</p>
               )}
             </div>
-            <div className={styles.buttonContainer}>
-              <button type="submit" disabled={roomIdError}>
-                Submit
-              </button>
-            </div>
+            <button type="submit" className={styles.submitBtn}>
+              등록
+            </button>
           </form>
         </div>
       )}

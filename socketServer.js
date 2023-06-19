@@ -26,14 +26,17 @@ app.use(express.static(__dirname + "/public"));
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  // 연결 해제 시 실행되는 이벤트 핸들러
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
-    if (studyroomRefs.length > 0) {
+    if (socket.userUID && studyroomRefs.length > 0) {
       studyroomRefs.forEach((studyroomRef) => {
-        // Firebase Firestore에서 해당 필드 제거
+        // Firebase Firestore에서 해당 UID 제거
         studyroomRef
-          .update({ uids: admin.firestore.FieldValue.arrayRemove(socket.id) })
+          .update({
+            uids: admin.firestore.FieldValue.arrayRemove(socket.userUID),
+          })
           .then(() => {
             console.log("User uid removed from Firestore");
           })
@@ -51,6 +54,9 @@ io.on("connection", (socket) => {
     const userUID = userInfo.uid;
     console.log("User uid:", userUID);
 
+    // 소켓에 userUID 속성으로 저장
+    socket.userUID = userUID;
+
     // 페이지 경로 가져오기
     const pagePath = userInfo.pagePath;
     console.log("Page path:", pagePath);
@@ -58,7 +64,6 @@ io.on("connection", (socket) => {
     // Firestore에 문서 생성 또는 가져오기
     const studyroomRef = db.collection("studyroom").doc(pagePath);
     studyroomRefs.push(studyroomRef); // 배열에 참조 추가
-
     studyroomRef
       .get()
       .then((doc) => {
@@ -95,16 +100,21 @@ io.on("connection", (socket) => {
     if (studyroomRefs.length > 0) {
       const allUsers = [];
       studyroomRefs.forEach((studyroomRef) => {
-        studyroomRef.get().then((doc) => {
-          if (doc.exists) {
-            const users = doc.data().uids || []; // users가 undefined인 경우 빈 배열로 초기화
-            allUsers.push(...users);
-          }
+        studyroomRef
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              const users = doc.data().uids || []; // users가 undefined인 경우 빈 배열로 초기화
+              allUsers.push(...users);
+            }
 
-          // 중복 제거 후 현재 사용자에게 모든 사용자 정보 전달
-          const uniqueUsers = [...new Set(allUsers)];
-          socket.emit("allUsers", uniqueUsers);
-        });
+            // 중복 제거 후 현재 사용자에게 모든 사용자 정보 전달
+            const uniqueUsers = [...new Set(allUsers)];
+            socket.emit("allUsers", uniqueUsers);
+          })
+          .catch((error) => {
+            console.error("Error getting studyroom document:", error);
+          });
       });
     }
   });

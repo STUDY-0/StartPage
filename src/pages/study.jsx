@@ -5,6 +5,7 @@ import Timer from '../../src/Timer';
 import navStyles from '../styles/nav.module.css';
 import Image from 'next/image';
 import logo from '../../public/images/logo.png';
+import firebase from 'firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';

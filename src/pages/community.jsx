@@ -1,15 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import logo from '../../public/images/logo.png';
-import styles from '../styles/community.module.css';
-import navStyles from '../styles/nav.module.css';
-import Image from 'next/image';
-import firebase from 'firebase/app';
-import db from '../net/db';
-import { getDocs, collection, query, orderBy, getFirestore, setDoc, serverTimestamp } from 'firebase/firestore';
-import { doc, getDoc } from 'firebase/firestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import io from 'socket.io-client';
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import logo from "../../public/images/logo.png";
+import styles from "../styles/community.module.css";
+import navStyles from "../styles/nav.module.css";
+import Image from "next/image";
+import firebase from 'firebase/compat/app';
+import db from "../net/db";
+import {
+  getDocs,
+  collection,
+  query,
+  orderBy,
+  getFirestore,
+  setDoc,
+  serverTimestamp,
+} from "firebase/compat/firestore";  // 변경된 import 경로
+import { doc, getDoc } from "firebase/compat/firestore";  // 변경된 import 경로
+import { getAuth, onAuthStateChanged } from "firebase/compat/auth";  // 변경된 import 경로
+import { getDocs, collection, query, orderBy, getFirestore, setDoc, serverTimestamp, doc, getDoc } from "firebase/compat/firestore";  // 중복된 import 경로 제거
+import io from "socket.io-client";
 
 const useOnClickOutside = (ref, handler) => {
   useEffect(() => {
