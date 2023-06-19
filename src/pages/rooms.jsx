@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 import Community from './community';
 import Study from './study';
 
