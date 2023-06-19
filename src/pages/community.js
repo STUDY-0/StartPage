@@ -22,6 +22,10 @@ import { io } from "socket.io-client";
 const firebaseConfig = {
   // Firebase 프로젝트의 구성 정보를 입력하세요.
 };
+const config = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  // 나머지 Firebase 구성 옵션들...
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);

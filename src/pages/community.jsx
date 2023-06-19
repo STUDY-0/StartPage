@@ -4,18 +4,17 @@ import logo from "../../public/images/logo.png";
 import styles from "../styles/community.module.css";
 import navStyles from "../styles/nav.module.css";
 import Image from "next/image";
-import firebase from 'firebase/compat/app';
+import firebase from "firebase/compat/app";
 import db from "../net/db";
 import {
-  getDocs,
   collection,
   query,
   orderBy,
   setDoc,
   serverTimestamp,
-} from "firebase/compat/firestore";  // Updated import path
-import { doc, getDoc } from "firebase/compat/firestore";  // Updated import path
-import { getAuth, onAuthStateChanged } from "firebase/compat/auth";  // Updated import path
+  getDocs,
+} from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import io from "socket.io-client";
 
 const useOnClickOutside = (ref, handler) => {
@@ -37,26 +36,26 @@ const useOnClickOutside = (ref, handler) => {
 
 function Community() {
   const [showModal, setShowModal] = useState(false);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [roomID, setRoomID] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [roomID, setRoomID] = useState("");
   const [roomIdError, setRoomIdError] = useState(false);
   const [missingFieldsError, setMissingFieldsError] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [nickname, setNickname] = useState('');
-  const [email, setEmail] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   const router = useRouter();
   const modal = useRef(null);
 
-  const auth = getAuth(firebase);
+  const auth = getAuth();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setLoggedIn(true);
-        console.log('로그인 상태: 로그인됨' + user.uid);
+        console.log("로그인 상태: 로그인됨" + user.uid);
 
         // 사용자 정보 가져오기
         const { displayName, email } = user;
@@ -68,7 +67,7 @@ function Community() {
         // socket.emit('userConnected', { displayName, email, pagePath });
       } else {
         setLoggedIn(false);
-        console.log('로그인 상태: 로그인되지 않음');
+        console.log("로그인 상태: 로그인되지 않음");
       }
     });
 
@@ -77,7 +76,7 @@ function Community() {
 
   // 현재 접속한 이메일 출력
   useEffect(() => {
-    console.log('User email in Community:', email);
+    console.log("User email in Community:", email);
   }, [email]);
 
   // modal
@@ -109,7 +108,7 @@ function Community() {
       setRoomID(inputValue);
       setRoomIdError(false);
     } else {
-      setRoomID('');
+      setRoomID("");
       setRoomIdError(true);
     }
   };
@@ -123,14 +122,15 @@ function Community() {
     setMissingFieldsError(false);
 
     // Create room in Firebase
-    const roomsCollection = collection(db, 'rooms');
-    const newRoomDocRef = await setDoc(doc(roomsCollection, roomID), {
+    const dbInstance = firebase.firestore();
+    const roomsCollection = dbInstance.collection("rooms");
+    const newRoomDocRef = await setDoc(roomsCollection.doc(roomID), {
       title,
       content,
       createdAt: serverTimestamp(),
     });
 
-    console.log('New room created:', newRoomDocRef.id);
+    console.log("New room created:", newRoomDocRef.id);
 
     // Redirect to the new room
     router.push(`/rooms/${roomID}`);
@@ -139,8 +139,9 @@ function Community() {
   // Fetch posts
   useEffect(() => {
     const fetchPosts = async () => {
-      const postsCollection = collection(db, 'posts');
-      const postsQuery = query(postsCollection, orderBy('createdAt', 'desc'));
+      const dbInstance = firebase.firestore();
+      const postsCollection = dbInstance.collection("posts");
+      const postsQuery = query(postsCollection, orderBy("createdAt", "desc"));
       const postsSnapshot = await getDocs(postsQuery);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
       setPosts(postsData);
@@ -172,7 +173,7 @@ function Community() {
             <div className={navStyles.loginContainer}>
               <button
                 className={navStyles.loginButton}
-                onClick={() => router.push('/login')}
+                onClick={() => router.push("/login")}
               >
                 Login
               </button>
@@ -231,7 +232,10 @@ function Community() {
                   </p>
                 )}
               </div>
-              <button className={styles.createRoomButton} onClick={handleCreateRoom}>
+              <button
+                className={styles.createRoomButton}
+                onClick={handleCreateRoom}
+              >
                 Create Room
               </button>
             </div>
