@@ -148,7 +148,7 @@ function Community() {
       content,
       roomID,
       date: datestr, // 날짜 저장
-      timestamp: today,
+      timestamp: serverTimestamp(),
       nickname: nickname,
     });
 
@@ -220,41 +220,6 @@ function Community() {
       </div>
     );
   };
-
-  // 소켓 클라이언트 코드 시작점
-  useEffect(() => {
-    const socket = io.connect("http://localhost:4000");
-
-    const auth = getAuth(firebase);
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoggedIn(true);
-        console.log("로그인 상태: 로그인됨" + user.uid);
-
-        // 사용자 정보 가져오기
-        const { displayName, email, uid } = user;
-        setDisplayName(displayName);
-        setEmail(email);
-
-        // 사용자 정보를 서버로 전송
-        const pagePath = router.pathname;
-        socket.emit("userConnected", { displayName, uid, pagePath });
-      } else {
-        setLoggedIn(false);
-        console.log("로그인 상태: 로그인되지 않음");
-      }
-    });
-
-    // 서버로부터 전달된 이메일 정보를 받아와서 상태 업데이트
-    socket.on("userEmail", (userEmail) => {
-      setEmail(userEmail);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [router.pathname]);
-  // 소켓 클라이언트 코드 끝
 
   return (
     <div className={styles.App}>
