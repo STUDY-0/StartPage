@@ -4,8 +4,8 @@ import logo from "../../public/images/logo.png";
 import styles from "../styles/community.module.css";
 import navStyles from "../styles/nav.module.css";
 import Image from "next/image";
-import firebase from "firebase/app";
-import db from "../net/db";
+import firebase from 'firebase';
+import { db } from "../net/db";
 import {
   getDocs,
   collection,
@@ -14,10 +14,10 @@ import {
   getFirestore,
   setDoc,
   serverTimestamp,
-} from "firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import io from "socket.io-client";
+} from "firebase/compat/firestore";
+import { doc, getDoc } from "firebase/compat/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/compat/auth";
+import { io } from "socket.io-client";
 
 const useOnClickOutside = (ref, handler) => {
   useEffect(() => {
@@ -28,10 +28,14 @@ const useOnClickOutside = (ref, handler) => {
       handler(event);
     };
 
-    document.addEventListener("mousedown", listener);
+    if (typeof window !== 'undefined') {
+      document.addEventListener("mousedown", listener);
+    }
 
     return () => {
-      document.removeEventListener("mousedown", listener);
+      if (typeof window !== 'undefined') {
+        document.removeEventListener("mousedown", listener);
+      }
     };
   }, [ref, handler]);
 };
@@ -145,7 +149,7 @@ function Community() {
       content,
       roomID,
       date: datestr, // 날짜 저장
-      timestamp: today,
+      timestamp: serverTimestamp(),
     });
 
     setTitle("");
@@ -219,7 +223,7 @@ function Community() {
     );
   };
 
-  // // 소켓 클라이언트 코드 시작점
+  // 소켓 클라이언트 코드 시작점
   useEffect(() => {
     const socket = io.connect("http://localhost:4000");
 
@@ -232,7 +236,7 @@ function Community() {
         // 사용자 정보 가져오기
         const { displayName, email, uid } = user;
         setDisplayName(displayName);
-        setEmail(uid);
+        setEmail(email);
 
         // 사용자 정보를 서버로 전송
         const pagePath = router.pathname;
@@ -252,7 +256,7 @@ function Community() {
       unsubscribe();
     };
   }, [router.pathname]);
-  // // 소켓 클라이언트 코드 끝
+  // 소켓 클라이언트 코드 끝
 
   return (
     <div className={styles.App}>
@@ -320,14 +324,12 @@ function Community() {
                 </p>
               )}
               {missingFieldsError && (
-                <p className={styles.errorMessage}>* 모든 칸을 입력해주세요.</p>
+                <p className={styles.errorMessage}>* 필수 항목을 입력하세요.</p>
               )}
             </div>
-            <div className={styles.buttonContainer}>
-              <button type="submit" disabled={roomIdError}>
-                Submit
-              </button>
-            </div>
+            <button type="submit" className={styles.submitBtn}>
+              등록
+            </button>
           </form>
         </div>
       )}
