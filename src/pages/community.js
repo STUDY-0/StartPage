@@ -4,20 +4,28 @@ import logo from "../../public/images/logo.png";
 import styles from "../styles/community.module.css";
 import navStyles from "../styles/nav.module.css";
 import Image from "next/image";
-import firebase from 'firebase';
-import { db } from "../net/db";
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
-  getDocs,
+  getFirestore,
   collection,
   query,
   orderBy,
-  getFirestore,
+  getDocs,
+  doc,
+  getDoc,
   setDoc,
   serverTimestamp,
-} from "firebase/compat/firestore";
-import { doc, getDoc } from "firebase/compat/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/compat/auth";
+} from "firebase/firestore";
 import { io } from "socket.io-client";
+
+const firebaseConfig = {
+  // Firebase 프로젝트의 구성 정보를 입력하세요.
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const useOnClickOutside = (ref, handler) => {
   useEffect(() => {
@@ -28,18 +36,13 @@ const useOnClickOutside = (ref, handler) => {
       handler(event);
     };
 
-    if (typeof window !== 'undefined') {
-      document.addEventListener("mousedown", listener);
-    }
+    document.addEventListener("mousedown", listener);
 
     return () => {
-      if (typeof window !== 'undefined') {
-        document.removeEventListener("mousedown", listener);
-      }
+      document.removeEventListener("mousedown", listener);
     };
   }, [ref, handler]);
 };
-
 function Community() {
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
@@ -252,13 +255,9 @@ function Community() {
         ))}
       </div>
 
-      {showModal && (
+      {typeof window !== 'undefined' && showModal && (
         <div className={styles.modal}>
-          <form
-            ref={modal}
-            onSubmit={handleSubmit}
-            className={styles.modalform}
-          >
+          <form onSubmit={handleSubmit} className={styles.modalform}>
             <input
               type="text"
               placeholder="제목"
