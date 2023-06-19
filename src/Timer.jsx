@@ -3,6 +3,7 @@ import styles from './styles/study.module.css';
 import { getFirestore, collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { format } from "date-fns";
+import firebase from '../firebase';
 
 // Firebase 초기화 및 Firestore 인스턴스 설정
 const db = getFirestore();

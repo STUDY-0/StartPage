@@ -50,7 +50,7 @@ function Community() {
   const [posts, setPosts] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
+  const [uid, setUID] = useState("");
   const [displayName, setDisplayName] = useState("");
 
   const router = useRouter();
@@ -64,9 +64,8 @@ function Community() {
         console.log("로그인 상태: 로그인됨" + user.uid);
 
         // 사용자 정보 가져오기
-        const { displayName, email } = user;
-        setNickname(displayName); // 사용자의 displayName을 nickname으로 설정
-        setEmail(email);
+        const { uid } = user;
+        setUID(uid);
 
         // 사용자 정보를 서버로 전송
         const pagePath = router.pathname;
@@ -82,8 +81,8 @@ function Community() {
 
   // 현재 접속한 이메일 출력
   useEffect(() => {
-    console.log("User uid in Community:", email);
-  }, [email]);
+    console.log("User uid in Community:", uid);
+  }, [uid]);
 
   // modal
   const openModal = () => {
@@ -149,7 +148,12 @@ function Community() {
       content,
       roomID,
       date: datestr, // 날짜 저장
+<<<<<<< HEAD
       timestamp: serverTimestamp(),
+=======
+      timestamp: today,
+      nickname: nickname,
+>>>>>>> e2d3ce7322d862ff8efd4f00c878e5dad26e699e
     });
 
     setTitle("");
@@ -177,8 +181,6 @@ function Community() {
   let year = today.getFullYear(); // 년도
   let month = today.getMonth() + 1; // 월
   let date = today.getDate(); // 날짜
-
-  console.log(year + "/" + month + "/" + date);
 
   const datestr = year + "/" + month + "/" + date;
 
@@ -216,13 +218,14 @@ function Community() {
     return (
       <div className={styles.post} onClick={handlePostClick}>
         <h1 className={styles["post-title"]}>{post.title}</h1>
-        <p className={styles["post-writer"]}>{nickname}</p>
+        <p className={styles["post-writer"]}>{post.nickname}</p>
         <p className={styles["post-date"]}>{datestr}</p>
         <p className={styles["post-content"]}>{post.content}</p>
       </div>
     );
   };
 
+<<<<<<< HEAD
   // 소켓 클라이언트 코드 시작점
   useEffect(() => {
     const socket = io.connect("http://localhost:4000");
@@ -258,6 +261,8 @@ function Community() {
   }, [router.pathname]);
   // 소켓 클라이언트 코드 끝
 
+=======
+>>>>>>> e2d3ce7322d862ff8efd4f00c878e5dad26e699e
   return (
     <div className={styles.App}>
       <nav className={navStyles.nav}>
