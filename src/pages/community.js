@@ -22,9 +22,9 @@ import firebaseApp from "@/net/firebaseApp";
 import db from "@/net/db";
 import auth from "@/net/auth";
 
-const firebaseConfig = {
-  // Firebase 프로젝트의 구성 정보를 입력하세요.
-};
+// const firebaseConfig = {
+//   // Firebase 프로젝트의 구성 정보를 입력하세요.
+// };
 // const config = {
 //   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
 //   // 나머지 Firebase 구성 옵션들...
