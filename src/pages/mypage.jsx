@@ -16,6 +16,12 @@ import { getFirestore, collection, doc, getDoc, getDocs } from 'firebase/firesto
 import Image from 'next/image';
 import Swal from 'sweetalert2';
 
+import firebaseApp from "@/net/firebaseApp";
+import db from "@/net/db";
+import auth from "@/net/auth";
+
+const app = firebaseApp;
+
 function MyPage() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
@@ -30,7 +36,7 @@ function MyPage() {
 
   // 페이지 로드 시 로그인 상태 확인
   useEffect(() => {
-    const auth = getAuth(firebase);
+    // const auth = getAuth(firebase);
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setLoggedIn(true);

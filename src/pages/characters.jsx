@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import firebase from '../../firebase';
+// import firebase from '../../firebase';
 import { doc, getFirestore, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import styles from '../styles/characters.module.css';
 import Swal from 'sweetalert2';
+import firebaseApp from "@/net/firebaseApp";
+import db from "@/net/db";
+import auth from "@/net/auth";
 
+const app = firebaseApp;
 
 function Characters() {
     const router = useRouter();
@@ -14,7 +18,7 @@ function Characters() {
 
     // 페이지 로드 시 로그인 상태 확인
     useEffect(() => {
-        const auth = getAuth(firebase);
+        const auth = getAuth(app);
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setLoggedIn(true);
@@ -58,7 +62,7 @@ function Characters() {
 
         // Firestore에 사용자 정보 업데이트
         try {
-            const auth = getAuth(firebase);
+            const auth = getAuth(app);
             const user = auth.currentUser;
 
             if (!user) {
@@ -66,7 +70,7 @@ function Characters() {
                 return;
             }
 
-            const firestore = getFirestore(firebase);
+            const firestore = getFirestore(app);
             const userId = user.uid;
 
             const userDocRef = doc(firestore, 'users', userId);

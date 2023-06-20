@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getAuth, signInWithEmailAndPassword, AuthErrorCodes, onAuthStateChanged } from 'firebase/auth';
-import firebaseApp from '../../firebase';
+// import firebaseApp from '../../firebase';
 import styles from '../styles/signin.module.css';
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
+import firebaseApp from "@/net/firebaseApp";
+import db from "@/net/db";
+import auth from "@/net/auth";
 
+const app = firebaseApp;
 
 function Signin() {
   const inputRef = useRef(null);
@@ -52,7 +56,7 @@ function Signin() {
         icon: 'warning',
       });
     } else {
-      const auth = getAuth(firebaseApp);
+      // const auth = getAuth(firebaseApp);
 
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {

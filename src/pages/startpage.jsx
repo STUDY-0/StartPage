@@ -2,8 +2,13 @@ import React from "react";
 import styles from '../styles/startpage.module.css'
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import firebase from '../../firebase'
+// import { getAuth, onAuthStateChanged } from "firebase/auth";
+// import firebase from '../../firebase'
+import firebaseApp from "@/net/firebaseApp";
+import db from "@/net/db";
+import auth from "@/net/auth";
+
+const app = firebaseApp;
 
 function StartPage() {
   const router = useRouter();

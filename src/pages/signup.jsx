@@ -1,9 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "firebase/auth";
 import styles from "../styles/signup.module.css";
-import firebaseApp from "../../firebase";
+// import firebaseApp from "../../firebase";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2"
+import firebaseApp from "@/net/firebaseApp";
+import db from "@/net/db";
+import auth from "@/net/auth";
+
+const app = firebaseApp;
 
 function signup() {
   const inputRef = useRef(null);
@@ -77,7 +82,7 @@ function signup() {
     }
 
     // auth 생성
-    const auth = getAuth(firebaseApp);
+    // const auth = getAuth(firebaseApp);
 
     // 유저 생성
     createUserWithEmailAndPassword(auth, email, password)

@@ -18,6 +18,9 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { io } from "socket.io-client";
+import firebaseApp from "@/net/firebaseApp";
+import db from "@/net/db";
+import auth from "@/net/auth";
 
 const firebaseConfig = {
   // Firebase 프로젝트의 구성 정보를 입력하세요.
@@ -27,9 +30,10 @@ const firebaseConfig = {
 //   // 나머지 Firebase 구성 옵션들...
 // };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app = firebaseApp;
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
+// const db = getFirestore(app);
 
 const useOnClickOutside = (ref, handler) => {
   useEffect(() => {
@@ -63,7 +67,7 @@ function Community() {
   const router = useRouter();
   const modal = useRef(null);
 
-  const auth = getAuth(firebase);
+  // const auth = getAuth(firebase);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {

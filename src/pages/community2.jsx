@@ -1,3 +1,5 @@
+// 경로 겹침
+
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import logo from "../../public/images/logo.png";
